@@ -23,9 +23,10 @@ int initGraphics(void){
 	box(wmenu,0,0);
 
 	mvwaddstr(wmenu,1,5,"Commands");
-	mvwaddstr(wmenu,3,2,"a: add cells");
-	mvwaddstr(wmenu,4,2,"0..9: xSpeed");
-	mvwaddstr(wmenu,5,2,"q: quit");
+	mvwaddstr(wmenu,3,2,"click: add");
+	mvwaddstr(wmenu,4,2,"click 2x: kill");
+	mvwaddstr(wmenu,5,2,"0..9: xSpeed");
+	mvwaddstr(wmenu,6,2,"q: quit");
 	pmenu = new_panel(wmenu);
 
 	wsplash = newwin(5,25,0,28);
