@@ -4,3 +4,4 @@
 int initGame(void);
 void clearBoard(void);
 void runGame(void);
+void nextGeneration(char* board);

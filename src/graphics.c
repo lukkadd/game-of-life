@@ -3,8 +3,8 @@
 #include <game.h>
 #include <graphics.h>
 
-WINDOW *wsplash, *wmenu, *wboard;
-PANEL *psplash, *pmenu, *pboard;
+WINDOW *wsplash, *wmenu;
+PANEL *psplash, *pmenu;
 
 int initGraphics(void){
     /* curses initialization */
@@ -12,14 +12,12 @@ int initGraphics(void){
 	cbreak(); /*Disable line buffering*/
 	noecho(); /* Hide user input */
 	curs_set(0); /* Hide the cursor */
-	keypad(stdscr,TRUE);
-	nodelay(stdscr,TRUE);
+	nodelay(stdscr,TRUE); /* return ERR if input is not given */
+	keypad(stdscr,TRUE); /* allows for F* keys and mouse input */
+	mousemask(ALL_MOUSE_EVENTS,NULL); /* enables mouse events */
 
 	/*creating the program's visual structure*/
 	box(stdscr,0,0);
-
-	wboard = newwin(22,78,1,1);
-	pboard = new_panel(wboard);
 	
 	wmenu = newwin(8,20,15,59);
 	box(wmenu,0,0);
@@ -43,7 +41,7 @@ int initGraphics(void){
 void renderBoard(char *gboard){
     for (int i = 0; i < BOARD_HEIGHT; i++){
         for(int j = 0; j < BOARD_WIDTH;j++){
-            mvwaddch(wboard,i,j,gboard[i*BOARD_WIDTH+j]);
+            mvwaddch(stdscr,i+1,j+1,gboard[i*BOARD_WIDTH+j]);
         }
     }
 }

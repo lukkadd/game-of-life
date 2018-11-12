@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <curses.h>
 #include <panel.h>
 #include <graphics.h>
@@ -7,20 +8,26 @@
 
 char board[BOARD_WIDTH*BOARD_HEIGHT];
 
-extern WINDOW *wboard;
-
 void runGame(void){
-    int y = 10, x = 40;
-    wmove(wboard,y,x);
     int input;  
     int gameRunning = 1;
+    int timeScale = 0;
     MEVENT event;
+    time_t start = time(0);
 
     while(gameRunning){
-        input = wgetch(wboard);
+        input = wgetch(stdscr);
         switch(input){
-            case 'a':
-                board[BOARD_WIDTH*10 + 10] = 'O';
+            case KEY_MOUSE:
+                if(getmouse(&event) == OK){
+                    board[BOARD_WIDTH*(event.y - 1) + (event.x - 1)] = '0';
+                }
+                break;
+            case '1':
+                timeScale = 1;
+                break;
+            case '9':
+                timeScale = 9;
                 break;
             case 'q':
                 gameRunning = 0;
@@ -29,8 +36,14 @@ void runGame(void){
         renderBoard(board);
         update_panels();
         doupdate();
-    }
 
+        if(timeScale){
+            if(difftime(time(0),start) > 10 - timeScale){
+                board[810] = 'B';
+                start = time(0);
+            }
+        }
+    }
 }
 
 int initGame(void){
@@ -50,4 +63,8 @@ void clearBoard(void){
     for(int i = 0; i < BOARD_WIDTH*BOARD_HEIGHT;i++){
         board[i] = '.';
     }
+}
+
+void nextGeneration(char *board){
+    
 }

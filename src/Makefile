@@ -2,7 +2,7 @@ IDIR =../include
 CC=cc
 CFLAGS=-I$(IDIR)
 
-LIBS=-lcurses -lpanel
+LIBS=-lncurses -lpanel
 
 _DEPS = game.h graphics.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
