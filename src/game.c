@@ -7,53 +7,30 @@
 #include <game.h>
 
 char board[BOARD_WIDTH*BOARD_HEIGHT];
-extern WINDOW *wmenu;
+int timeScale = 0;
+int gameRunning = 1;
+
 void runGame(void){
-    int input;  
-    int gameRunning = 1;
-    int timeScale = 0;
-    MEVENT event;
-    time_t start = time(0);
+    clock_t start = clock();
+    clock_t now;
+    float diff;
 
     while(gameRunning){
-        input = wgetch(stdscr);
-        switch(input){
-            case KEY_MOUSE:
-                if(getmouse(&event) == OK){
-                    if(event.bstate & BUTTON1_CLICKED){
-                        board[BOARD_WIDTH*(event.y - 1) + (event.x - 1)] = '0';
-                    }else if(event.bstate & BUTTON1_DOUBLE_CLICKED){
-                        board[BOARD_WIDTH*(event.y - 1) + (event.x - 1)] = '.';    
-                    }
-                }
-                break;
-            case '0':
-                timeScale = 0;
-                break;
-            case '1':
-                timeScale = 1;
-                break;
-            case 'a':
-                board[10*BOARD_WIDTH+10] = 'B';
-                break;
-            case 'c':
-                mvwprintw(wmenu,6,1,"%d alives",checkNeighbors(board,1,1));
-                break;
-            case '9':
-                timeScale = 9;
-                break;
-            case 'q':
-                gameRunning = 0;
-                break;
-        }
-        renderBoard(board);
-        update_panels();
+        
+        handleInput(); /* check for user input */
+
+        renderBoard(board); /* render board with user input */
+        /* show updated panels */
+        update_panels(); 
         doupdate();
 
+        /* check for fixed timestep */
         if(timeScale){
-            if(difftime(time(0),start) > 1 - 0.1*timeScale){
+            now = clock();
+            diff = ((float)(now - start) / CLOCKS_PER_SEC ) * 1000;   
+            if(diff > 1000/timeScale){
                 nextGeneration(board);
-                start = time(0);
+                start = now;
             }
         }
     }
@@ -130,4 +107,53 @@ int checkNeighbors(char *board, int x, int y){
         }
     }
     return alives;
+}
+
+void handleInput(void){
+    int input = wgetch(stdscr);
+    MEVENT event;
+        switch(input){
+            case KEY_MOUSE:
+                if(getmouse(&event) == OK){
+                    if(event.bstate & BUTTON1_CLICKED){
+                        board[BOARD_WIDTH*(event.y - 1) + (event.x - 1)] = '0';
+                    }else if(event.bstate & BUTTON1_DOUBLE_CLICKED){
+                        board[BOARD_WIDTH*(event.y - 1) + (event.x - 1)] = '.';    
+                    }
+                }
+                break;
+            case '0':
+                timeScale = 0;
+                break;
+            case '1':
+                timeScale = 1;
+                break;
+            case '2':
+                timeScale = 2;
+                break;
+            case '3':
+                timeScale = 3;
+                break;
+            case '4':
+                timeScale = 4;
+                break;
+            case '5':
+                timeScale = 5;
+                break;
+            case '6':
+                timeScale = 6;
+                break;
+            case '7':
+                timeScale = 7;
+                break;
+            case '8':
+                timeScale = 8;
+                break;
+            case '9':
+                timeScale = 9;
+                break;
+            case 'q':
+                gameRunning = 0;
+                break;
+        }
 }
